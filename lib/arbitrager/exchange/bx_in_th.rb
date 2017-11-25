@@ -11,7 +11,19 @@ module Arbitrager
       end
 
       def setup
-        bx.currency_pairings
+        pairings = bx.currency_pairings
+        @omg_thb = pairings.find { |_, pair| match_pair(pair, 'THB', 'OMG') }
+        @eth_thb = pairings.find { |_, pair| match_pair(pair, 'THB', 'ETH') }
+      end
+
+      def supported_pairings
+        ['OMG/ETH'].freeze
+      end
+
+      private
+
+      def match_pair(pair, pri, sec)
+        pair['primary_currency'] == pri && pair['secondary_currency'] == sec
       end
     end
   end

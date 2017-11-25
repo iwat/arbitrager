@@ -21,4 +21,10 @@ RSpec.describe Arbitrager::Exchange::BxInTh do
       bx.setup
     end
   end
+
+  describe '#supported_pairings' do
+    it 'supports OMG/ETH' do
+      expect(bx.supported_pairings).to eq(['OMG/ETH'])
+    end
+  end
 end

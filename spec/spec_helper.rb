@@ -3,6 +3,8 @@
 require 'bundler/setup'
 require 'webmock/rspec'
 
+require 'pry'
+
 $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib")
 $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../vendor")
 
