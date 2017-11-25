@@ -6,8 +6,8 @@ module Arbitrager
   module Exchange
     class BxInTh
       attr_reader :bx
-      def initialize
-        @bx = ::BxInThAPI.new('', '')
+      def initialize(api_key, secret)
+        @bx = ::BxInThAPI.new(api_key, secret)
       end
 
       def setup
