@@ -1,0 +1,17 @@
+AllCops:
+  DisplayCopNames: true
+
+Style/Documentation:
+  Enabled: false
+
+Style/MethodCallWithArgsParentheses:
+  Enabled: true
+  Exclude:
+    - Gemfile
+    - Rakefile
+  IgnoredMethods:
+    - describe
+    - expect_with
+    - mock_with
+    - require
+    - to
