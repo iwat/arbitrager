@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'pry'
+
+$LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib")
+$LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../vendor")
+
+require 'arbitrager'
+
+Pry.start
