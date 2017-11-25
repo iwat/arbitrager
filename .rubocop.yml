@@ -1,6 +1,11 @@
 AllCops:
   DisplayCopNames: true
 
+Metrics/BlockLength:
+  Enabled: true
+  Exclude:
+    - spec/**/*
+
 Style/Documentation:
   Enabled: false
 
@@ -13,5 +18,6 @@ Style/MethodCallWithArgsParentheses:
     - describe
     - expect_with
     - mock_with
+    - raise
     - require
     - to
