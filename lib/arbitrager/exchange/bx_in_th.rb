@@ -7,6 +7,10 @@ module Arbitrager
       def initialize
         @bx = ::BxInThAPI.new("", "")
       end
+
+      def setup
+        bx.currency_pairings
+      end
     end
   end
 end
