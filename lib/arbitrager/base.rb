@@ -22,7 +22,7 @@ module Arbitrager
       pairings.each do |pairing|
         opportunities = exchanges
                         .select { |e| e.supported_pairings.include?(pairing) }
-                        .map { |e| [e, e.find_opportunity(pairing)] }
+                        .map { |e| [e, e.fetch_price(pairing)] }
         pp opportunities
       end
     end
