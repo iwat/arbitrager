@@ -28,7 +28,7 @@ RSpec.describe Arbitrager::Exchange::BxInTh do
     end
   end
 
-  describe '#opportunity' do
+  describe '#fetch_price' do
     before { bx.setup }
 
     before do
@@ -76,11 +76,11 @@ RSpec.describe Arbitrager::Exchange::BxInTh do
     end
 
     it 'rejects bad pairing' do
-      expect { bx.opportunity('BAD/BAD') }.to raise_error(ArgumentError)
+      expect { bx.fetch_price('BAD/BAD') }.to raise_error(ArgumentError)
     end
 
     it 'return opportunity object' do
-      pp bx.opportunity('OMG/ETH')
+      pp bx.fetch_price('OMG/ETH')
     end
   end
 end

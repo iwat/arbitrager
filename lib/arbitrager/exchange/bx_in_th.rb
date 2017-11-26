@@ -21,7 +21,7 @@ module Arbitrager
         ['OMG/ETH'].freeze
       end
 
-      def opportunity(pairing)
+      def fetch_price(pairing)
         raise ArgumentError unless supported_pairings.include?(pairing)
 
         OmgEthThbPair.new(
