@@ -15,7 +15,12 @@ module Arbitrager
       def setup; end
 
       def supported_pairings
-        %w[OMG/ETH OMG/BTC/USDT OMG/ETH/USDT REQ/BTC/USDT REQ/ETH/USDT].freeze
+        %w[
+          OMG/ETH
+          OMG/BTC/USDT OMG/ETH/USDT
+          REQ/BTC/USDT REQ/ETH/USDT
+          ZRX/BTC/USDT ZRX/ETH/USDT
+        ].freeze
       end
 
       def fetch_price(pairing)
