@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
-require 'bx_in_th_api'
 require 'concurrent'
+require 'exchange/binance'
 
 module Arbitrager
   module Exchange
     class Binance
       attr_reader :exchange, :omg_thb, :eth_thb
+
       def initialize(api_key, secret)
         @exchange = ::Exchange::Binance.new(api_key, secret)
       end
