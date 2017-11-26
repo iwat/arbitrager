@@ -12,8 +12,10 @@ RSpec.describe Arbitrager::Exchange::Binance do
   end
 
   describe '#supported_pairings' do
-    it 'supports OMG/ETH' do
-      expect(exchange.supported_pairings).to eq(['OMG/ETH'])
+    %w[OMG/ETH OMG/BTC/USDT OMG/ETH/USDT REQ/BTC/USDT REQ/ETH/USDT].each do |symbol|
+      it "supports #{symbol}" do
+        expect(exchange.supported_pairings).to include(symbol)
+      end
     end
   end
 
@@ -41,14 +43,39 @@ RSpec.describe Arbitrager::Exchange::Binance do
             ]
           }
         BODY
+
+      stub_request(:get, 'https://api.binance.com/api/v1/depth?symbol=ETHUSDT')
+        .to_return(status: 200, body: <<~BODY, headers: {})
+          {
+            "lastUpdateId": 8704083,
+            "bids": [
+              [ "457.26000000", "2.10298000", [] ],
+              [ "456.93000000", "4.99000000", [] ],
+              [ "456.92000000", "0.11952000", [] ],
+              [ "455.06000000", "2.34490000", [] ],
+              [ "455.00000000", "2.79352000", [] ]
+            ],
+            "asks": [
+              [ "457.39000000", "0.03000000", [] ],
+              [ "457.40000000", "0.65018000", [] ],
+              [ "457.48000000", "0.22500000", [] ],
+              [ "461.74000000", "4.27000000", [] ],
+              [ "461.75000000", "2.88069000", [] ]
+            ]
+          }
+        BODY
     end
 
     it 'rejects bad pairing' do
       expect { exchange.fetch_price('BAD/BAD') }.to raise_error(ArgumentError)
     end
 
-    it 'return fetch_price object' do
+    it 'returns fetch_price object' do
       pp exchange.fetch_price('OMG/ETH')
+    end
+
+    it 'calculates multi symbol pricing' do
+      pp exchange.fetch_price('OMG/ETH/USDT')
     end
   end
 end

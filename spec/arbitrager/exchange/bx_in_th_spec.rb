@@ -79,7 +79,7 @@ RSpec.describe Arbitrager::Exchange::BxInTh do
       expect { exchange.fetch_price('BAD/BAD') }.to raise_error(ArgumentError)
     end
 
-    it 'return fetch_price object' do
+    it 'returns fetch_price object' do
       pp exchange.fetch_price('OMG/ETH')
     end
   end
