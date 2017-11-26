@@ -8,5 +8,6 @@ $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib")
 $LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../vendor")
 
 require 'arbitrager'
+require 'exchange'
 
 Pry.start
