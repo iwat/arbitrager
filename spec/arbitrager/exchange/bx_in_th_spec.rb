@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Arbitrager::Exchange::BxInTh do
-  let(:bx) { Arbitrager::Exchange::BxInTh.new('apikey', 'secret') }
+  let(:exchange) { Arbitrager::Exchange::BxInTh.new('apikey', 'secret') }
 
   before do
     stub_request(:get, 'https://bx.in.th/api/pairing/')
@@ -18,18 +18,18 @@ RSpec.describe Arbitrager::Exchange::BxInTh do
 
   describe '#setup' do
     it 'does not crash' do
-      bx.setup
+      exchange.setup
     end
   end
 
   describe '#supported_pairings' do
     it 'supports OMG/ETH' do
-      expect(bx.supported_pairings).to eq(['OMG/ETH'])
+      expect(exchange.supported_pairings).to eq(['OMG/ETH'])
     end
   end
 
   describe '#fetch_price' do
-    before { bx.setup }
+    before { exchange.setup }
 
     before do
       stub_request(:get, 'https://bx.in.th/api/orderbook/?pairing=26')
@@ -76,11 +76,11 @@ RSpec.describe Arbitrager::Exchange::BxInTh do
     end
 
     it 'rejects bad pairing' do
-      expect { bx.fetch_price('BAD/BAD') }.to raise_error(ArgumentError)
+      expect { exchange.fetch_price('BAD/BAD') }.to raise_error(ArgumentError)
     end
 
-    it 'return opportunity object' do
-      pp bx.fetch_price('OMG/ETH')
+    it 'return fetch_price object' do
+      pp exchange.fetch_price('OMG/ETH')
     end
   end
 end
