@@ -12,7 +12,13 @@ RSpec.describe Arbitrager::Exchange::Binance do
   end
 
   describe '#supported_pairings' do
-    %w[OMG/ETH OMG/BTC/USDT OMG/ETH/USDT REQ/BTC/USDT REQ/ETH/USDT].each do |symbol|
+    %w[
+      KNC/BTC/USDT KNC/ETH/USDT
+      OMG/ETH
+      OMG/BTC/USDT OMG/ETH/USDT
+      REQ/BTC/USDT REQ/ETH/USDT
+      ZRX/BTC/USDT ZRX/ETH/USDT
+    ].each do |symbol|
       it "supports #{symbol}" do
         expect(exchange.supported_pairings).to include(symbol)
       end

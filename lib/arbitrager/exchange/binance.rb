@@ -16,6 +16,7 @@ module Arbitrager
 
       def supported_pairings
         %w[
+          KNC/BTC/USDT KNC/ETH/USDT
           OMG/ETH
           OMG/BTC/USDT OMG/ETH/USDT
           REQ/BTC/USDT REQ/ETH/USDT
@@ -27,12 +28,15 @@ module Arbitrager
         raise ArgumentError unless supported_pairings.include?(pairing)
 
         merge_price build_pairs(pairing.split('/')) do |pair|
-          book = exchange.order_book(pair)
-          [book['bids'][0][0].to_f, book['asks'][0][0].to_f]
+          best_bidask(exchange.order_book(pair))
         end
       end
 
       private
+
+      def best_bidask(book)
+        [book['bids'][0][0].to_f, book['asks'][0][0].to_f]
+      end
 
       def build_pairs(symbols)
         symbols
@@ -46,7 +50,9 @@ module Arbitrager
           .map { |pair| Concurrent::Future.execute { yield pair } }
           .each { |symbol| symbol.wait_or_cancel(3) }
           .map(&:value)
-          .reduce([1, 1]) { |state, bidask| [state[0] * bidask[0], state[1] * bidask[1]] }
+          .reduce([1, 1]) do |state, bidask|
+            [state[0] * bidask[0], state[1] * bidask[1]]
+          end
       end
     end
   end
