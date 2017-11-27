@@ -15,7 +15,9 @@ module Arbitrager
       exchange.setup
 
       exchanges << exchange
-      pairings.add(*exchange.supported_pairings)
+      exchange.supported_pairings.each do |pairing|
+        pairings.add(pairing)
+      end
     end
 
     def find_opportunity

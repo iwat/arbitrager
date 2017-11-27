@@ -19,12 +19,13 @@ RSpec.describe Arbitrager::Base do
       expect(arbitrager.pairings.size).to eq(1)
       expect(arbitrager.pairings).to include('OMG/ETH')
 
-      exchange_double(['ZRX/ETH']).tap do |exchange|
+      exchange_double(['REQ/ETH', 'ZRX/ETH']).tap do |exchange|
         arbitrager.register_exchange(exchange)
       end
 
-      expect(arbitrager.pairings.size).to eq(2)
+      expect(arbitrager.pairings.size).to eq(3)
       expect(arbitrager.pairings).to include('OMG/ETH')
+      expect(arbitrager.pairings).to include('REQ/ETH')
       expect(arbitrager.pairings).to include('ZRX/ETH')
     end
   end
