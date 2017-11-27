@@ -15,20 +15,20 @@ module Arbitrager
       def setup; end
 
       def supported_pairings
-        %w[
-          KNC/BTC/USDT KNC/ETH/USDT
-          OMG/ETH
-          OMG/BTC/USDT OMG/ETH/USDT
-          REQ/BTC/USDT REQ/ETH/USDT
-          ZRX/BTC/USDT ZRX/ETH/USDT
+        [
+          Pairing.new('KNC/BTC/USDT'), Pairing.new('KNC/ETH/USDT'),
+          Pairing.new('OMG/ETH'),
+          Pairing.new('REQ/BTC/USDT'), Pairing.new('REQ/ETH/USDT'),
+          Pairing.new('OMG/BTC/USDT'), Pairing.new('OMG/ETH/USDT'),
+          Pairing.new('ZRX/BTC/USDT'), Pairing.new('ZRX/ETH/USDT')
         ].freeze
       end
 
       def fetch_price(pairing)
         raise ArgumentError unless supported_pairings.include?(pairing)
 
-        merge_price build_pairs(pairing.split('/')) do |pair|
-          best_bidask(exchange.order_book(pair))
+        merge_price pairing.sub_pairs do |pair|
+          best_bidask(exchange.order_book(pair.to_s.delete('/')))
         end
       end
 
@@ -36,13 +36,6 @@ module Arbitrager
 
       def best_bidask(book)
         [book['bids'][0][0].to_f, book['asks'][0][0].to_f]
-      end
-
-      def build_pairs(symbols)
-        symbols
-          .zip(symbols[1..-1])
-          .reject { |s| s[1].nil? }
-          .map(&:join)
       end
 
       def merge_price(pairs)

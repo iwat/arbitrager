@@ -9,7 +9,7 @@ module Exchange
 
       attr_reader :api_key, :api_secret
 
-      BASE_URL = 'https://api.binance.com/api'
+      BASE_URL = 'https://api.binance.com/api'.freeze
 
       def initialize(api_key, api_secret)
         @api_key = api_key

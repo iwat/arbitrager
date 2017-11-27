@@ -2,6 +2,7 @@
 
 require 'arbitrager/base'
 require 'arbitrager/exchange'
+require 'arbitrager/pairing'
 
 module Arbitrager
   def self.new

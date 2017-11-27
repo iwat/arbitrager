@@ -18,7 +18,7 @@ module Arbitrager
       end
 
       def supported_pairings
-        ['OMG/ETH'].freeze
+        [Pairing.new('OMG/ETH')].freeze
       end
 
       def fetch_price(pairing)

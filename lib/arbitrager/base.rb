@@ -21,12 +21,25 @@ module Arbitrager
     end
 
     def find_opportunity
-      pairings.each do |pairing|
-        opportunities = exchanges
-                        .select { |e| e.supported_pairings.include?(pairing) }
-                        .map { |e| [e, e.fetch_price(pairing)] }
-        pp opportunities
-      end
+      pairings
+        .select { |pairing| pairing.symbols.size == 2 }
+        .each do |pairing|
+          fetch_prices(pairing).tap do |exchange_price|
+            lowest_bid = exchange_price.min_by { |_, bidask| bidask[0] }
+            highest_ask = exchange_price.max_by { |_, bidask| bidask[1] }
+            if lowest_bid[0] != highest_ask[0]
+              puts "OPPORTUNITY #{lowest_bid[1][0]} -> #{highest_ask[1][1]}"
+            end
+          end
+        end
+    end
+
+    private
+
+    def fetch_prices(pairing)
+      exchanges
+        .select { |e| e.supported_pairings.include?(pairing) }
+        .map { |e| [e, e.fetch_price(pairing)] }
     end
   end
 end

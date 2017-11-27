@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Arbitrager::Exchange::BxInTh do
   let(:exchange) { Arbitrager::Exchange::BxInTh.new('apikey', 'secret') }
+  let(:omgeth) { Arbitrager::Pairing.new('OMG/ETH') }
 
   before do
     stub_request(:get, 'https://bx.in.th/api/pairing/')
@@ -24,11 +25,14 @@ RSpec.describe Arbitrager::Exchange::BxInTh do
 
   describe '#supported_pairings' do
     it 'supports OMG/ETH' do
-      expect(exchange.supported_pairings).to eq(['OMG/ETH'])
+      expect(exchange.supported_pairings.size).to eq(1)
+      expect(exchange.supported_pairings).to include(omgeth)
     end
   end
 
   describe '#fetch_price' do
+    let(:foobar) { Arbitrager::Pairing.new('FOO/BAR') }
+
     before { exchange.setup }
 
     before do
@@ -76,11 +80,11 @@ RSpec.describe Arbitrager::Exchange::BxInTh do
     end
 
     it 'rejects bad pairing' do
-      expect { exchange.fetch_price('BAD/BAD') }.to raise_error(ArgumentError)
+      expect { exchange.fetch_price(foobar) }.to raise_error(ArgumentError)
     end
 
     it 'returns fetch_price object' do
-      pp exchange.fetch_price('OMG/ETH')
+      pp exchange.fetch_price(omgeth)
     end
   end
 end

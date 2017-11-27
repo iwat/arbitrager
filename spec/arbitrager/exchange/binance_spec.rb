@@ -20,7 +20,7 @@ RSpec.describe Arbitrager::Exchange::Binance do
       ZRX/BTC/USDT ZRX/ETH/USDT
     ].each do |symbol|
       it "supports #{symbol}" do
-        expect(exchange.supported_pairings).to include(symbol)
+        expect(exchange.supported_pairings).to include(Arbitrager::Pairing.new(symbol))
       end
     end
   end
@@ -73,15 +73,15 @@ RSpec.describe Arbitrager::Exchange::Binance do
     end
 
     it 'rejects bad pairing' do
-      expect { exchange.fetch_price('BAD/BAD') }.to raise_error(ArgumentError)
+      expect { exchange.fetch_price(Arbitrager::Pairing.new('FOO/BAR')) }.to raise_error(ArgumentError)
     end
 
     it 'returns fetch_price object' do
-      pp exchange.fetch_price('OMG/ETH')
+      pp exchange.fetch_price(Arbitrager::Pairing.new('OMG/ETH'))
     end
 
     it 'calculates multi symbol pricing' do
-      pp exchange.fetch_price('OMG/ETH/USDT')
+      pp exchange.fetch_price(Arbitrager::Pairing.new('OMG/ETH/USDT'))
     end
   end
 end
