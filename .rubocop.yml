@@ -19,6 +19,7 @@ Style/MethodCallWithArgsParentheses:
     - expect_with
     - mock_with
     - pp
+    - puts
     - raise
     - require
     - to

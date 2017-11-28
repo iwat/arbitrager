@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Arbitrager
   class Pairing
     attr_reader :symbols

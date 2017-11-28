@@ -18,8 +18,8 @@ RSpec.describe Arbitrager::Pairing do
 
     it 'is unique in set' do
       set = Set.new
-      set.add omgeth
-      set.add omgeth2
+      set.add(omgeth)
+      set.add(omgeth2)
 
       expect(set.size).to eq(1)
       expect(set).to include(omgeth)

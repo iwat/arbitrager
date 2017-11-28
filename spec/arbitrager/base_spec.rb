@@ -17,16 +17,12 @@ RSpec.describe Arbitrager::Base do
     let(:zrxeth) { Arbitrager::Pairing.new('ZRX/ETH') }
 
     it 'adds supported pairing to the list' do
-      exchange_double([omgeth]).tap do |exchange|
-        arbitrager.register_exchange(exchange)
-      end
+      arbitrager.register_exchange(exchange_double([omgeth]))
 
       expect(arbitrager.pairings.size).to eq(1)
       expect(arbitrager.pairings).to include(omgeth)
 
-      exchange_double([reqeth, zrxeth]).tap do |exchange|
-        arbitrager.register_exchange(exchange)
-      end
+      arbitrager.register_exchange(exchange_double([reqeth, zrxeth]))
 
       expect(arbitrager.pairings.size).to eq(3)
       expect(arbitrager.pairings).to include(omgeth)
