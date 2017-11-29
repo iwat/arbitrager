@@ -26,7 +26,7 @@ module Arbitrager
             lowest_bid = exchange_price.min_by { |_, bidask| bidask[0] }
             highest_ask = exchange_price.max_by { |_, bidask| bidask[1] }
             if lowest_bid[0] != highest_ask[0]
-              puts "OPPORTUNITY #{lowest_bid[1][0]} -> #{highest_ask[1][1]}"
+              puts "OPPORTUNITY #{lowest_bid[0]} #{lowest_bid[1][0]} -> #{highest_ask[0]} #{highest_ask[1][1]} #{highest_ask[1][1] * 100 / lowest_bid[1][0]}"
             end
           end
         end
