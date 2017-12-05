@@ -4,30 +4,30 @@ require 'spec_helper'
 
 RSpec.describe Arbitrager::Base do
   let(:arbitrager) { Arbitrager::Base.new }
-  let(:omgeth) { Exchange::Pairing.new('OMG/ETH') }
+  let(:omgeth) { Exchange::Pair.new('OMG/ETH') }
 
-  describe '#pairings' do
+  describe '#pairs' do
     it 'is initialed with empty list' do
-      expect(arbitrager.pairings.size).to eq(0)
+      expect(arbitrager.pairs.size).to eq(0)
     end
   end
 
   describe '#register_exchange' do
-    let(:reqeth) { Exchange::Pairing.new('REQ/ETH') }
-    let(:zrxeth) { Exchange::Pairing.new('ZRX/ETH') }
+    let(:reqeth) { Exchange::Pair.new('REQ/ETH') }
+    let(:zrxeth) { Exchange::Pair.new('ZRX/ETH') }
 
-    it 'adds supported pairing to the list' do
+    it 'adds supported pair to the list' do
       arbitrager.register_exchange(exchange_double([omgeth]))
 
-      expect(arbitrager.pairings.size).to eq(1)
-      expect(arbitrager.pairings).to include(omgeth)
+      expect(arbitrager.pairs.size).to eq(1)
+      expect(arbitrager.pairs).to include(omgeth)
 
       arbitrager.register_exchange(exchange_double([reqeth, zrxeth]))
 
-      expect(arbitrager.pairings.size).to eq(3)
-      expect(arbitrager.pairings).to include(omgeth)
-      expect(arbitrager.pairings).to include(reqeth)
-      expect(arbitrager.pairings).to include(zrxeth)
+      expect(arbitrager.pairs.size).to eq(3)
+      expect(arbitrager.pairs).to include(omgeth)
+      expect(arbitrager.pairs).to include(reqeth)
+      expect(arbitrager.pairs).to include(zrxeth)
     end
   end
 
@@ -44,10 +44,10 @@ RSpec.describe Arbitrager::Base do
 
   private
 
-  def exchange_double(pairings, price = nil)
+  def exchange_double(pairs, price = nil)
     instance_double(
       'exchange',
-      supported_pairings: pairings,
+      supported_pairs: pairs,
       setup: nil,
       fetch_price: price
     )

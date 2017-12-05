@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Exchange
-  class Pairing
+  class Pair
     attr_reader :symbols
 
     def initialize(symbols)
@@ -24,7 +24,7 @@ module Exchange
       symbols
         .zip(symbols[1..-1])
         .reject { |pair| pair[1].nil? }
-        .map { |pair| Pairing.new(pair.join('/')) }
+        .map { |pair| Pair.new(pair.join('/')) }
     end
 
     # Object

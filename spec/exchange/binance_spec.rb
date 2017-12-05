@@ -11,7 +11,7 @@ RSpec.describe Exchange::Binance do
     end
   end
 
-  describe '#supported_pairings' do
+  describe '#supported_pairs' do
     %w[
       KNC/BTC/USDT KNC/ETH/USDT
       OMG/ETH
@@ -20,7 +20,7 @@ RSpec.describe Exchange::Binance do
       ZRX/BTC/USDT ZRX/ETH/USDT
     ].each do |symbol|
       it "supports #{symbol}" do
-        expect(exchange.supported_pairings).to include(Exchange::Pairing.new(symbol))
+        expect(exchange.supported_pairs).to include(Exchange::Pair.new(symbol))
       end
     end
   end
@@ -72,16 +72,16 @@ RSpec.describe Exchange::Binance do
         BODY
     end
 
-    it 'rejects bad pairing' do
-      expect { exchange.fetch_price(Exchange::Pairing.new('FOO/BAR')) }.to raise_error(ArgumentError)
+    it 'rejects bad pair' do
+      expect { exchange.fetch_price(Exchange::Pair.new('FOO/BAR')) }.to raise_error(ArgumentError)
     end
 
     it 'returns fetch_price object' do
-      pp exchange.fetch_price(Exchange::Pairing.new('OMG/ETH'))
+      pp exchange.fetch_price(Exchange::Pair.new('OMG/ETH'))
     end
 
     it 'calculates multi symbol pricing' do
-      pp exchange.fetch_price(Exchange::Pairing.new('OMG/ETH/USDT'))
+      pp exchange.fetch_price(Exchange::Pair.new('OMG/ETH/USDT'))
     end
   end
 end

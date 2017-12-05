@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Exchange::Pairing do
+RSpec.describe Exchange::Pair do
   describe '#base' do
-    let(:pair) { Exchange::Pairing.new('OMG/THB/ETH') }
+    let(:pair) { Exchange::Pair.new('OMG/THB/ETH') }
 
     it 'returns OMG' do
       expect(pair.base).to eq('OMG')
@@ -12,7 +12,7 @@ RSpec.describe Exchange::Pairing do
   end
 
   describe '#quote' do
-    let(:pair) { Exchange::Pairing.new('OMG/THB/ETH') }
+    let(:pair) { Exchange::Pair.new('OMG/THB/ETH') }
 
     it 'returns ETH' do
       expect(pair.quote).to eq('ETH')
@@ -20,8 +20,8 @@ RSpec.describe Exchange::Pairing do
   end
 
   describe '#eq?' do
-    let(:omgeth) { Exchange::Pairing.new('OMG/ETH') }
-    let(:omgeth2) { Exchange::Pairing.new('OMG/ETH') }
+    let(:omgeth) { Exchange::Pair.new('OMG/ETH') }
+    let(:omgeth2) { Exchange::Pair.new('OMG/ETH') }
 
     it 'supports equality' do
       expect(omgeth).to eq(omgeth2)
@@ -43,7 +43,7 @@ RSpec.describe Exchange::Pairing do
   end
 
   describe '#to_s' do
-    let(:omgeth) { Exchange::Pairing.new('OMG/ETH') }
+    let(:omgeth) { Exchange::Pair.new('OMG/ETH') }
 
     it 'returns slashed symbols' do
       expect(omgeth.to_s).to eq('OMG/ETH')

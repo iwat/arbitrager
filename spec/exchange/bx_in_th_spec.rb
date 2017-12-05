@@ -22,22 +22,22 @@ RSpec.describe Exchange::BxInTh do
     end
   end
 
-  describe '#supported_pairings' do
+  describe '#supported_pairs' do
     it 'supports ETH/THB' do
-      expect(exchange.supported_pairings).to include(Exchange::Pairing.new('ETH/THB'))
+      expect(exchange.supported_pairs).to include(Exchange::Pair.new('ETH/THB'))
     end
 
     it 'supports OMG/THB/ETH' do
-      expect(exchange.supported_pairings).to include(Exchange::Pairing.new('OMG/THB/ETH'))
+      expect(exchange.supported_pairs).to include(Exchange::Pair.new('OMG/THB/ETH'))
     end
 
     it 'supports OMG/THB' do
-      expect(exchange.supported_pairings).to include(Exchange::Pairing.new('OMG/THB'))
+      expect(exchange.supported_pairs).to include(Exchange::Pair.new('OMG/THB'))
     end
   end
 
   describe '#fetch_price' do
-    let(:foobar) { Exchange::Pairing.new('FOO/BAR') }
+    let(:foobar) { Exchange::Pair.new('FOO/BAR') }
 
     before { exchange.setup }
 
@@ -85,7 +85,7 @@ RSpec.describe Exchange::BxInTh do
         BODY
     end
 
-    it 'rejects bad pairing' do
+    it 'rejects bad pair' do
       expect { exchange.fetch_price(foobar) }.to raise_error(ArgumentError)
     end
 
@@ -94,7 +94,7 @@ RSpec.describe Exchange::BxInTh do
       ['ETH/THB', 14_819, 14_869]
     ].each do |pair, bid, ask|
       it "returns fetch_price object for #{pair}" do
-        expect(exchange.fetch_price(Exchange::Pairing.new(pair))).to eq([bid, ask])
+        expect(exchange.fetch_price(Exchange::Pair.new(pair))).to eq([bid, ask])
       end
     end
   end

@@ -15,20 +15,20 @@ module Exchange
 
       def setup; end
 
-      def supported_pairings
+      def supported_pairs
         [
-          Pairing.new('KNC/BTC/USDT'), Pairing.new('KNC/ETH/USDT'),
-          Pairing.new('OMG/ETH'),
-          Pairing.new('REQ/BTC/USDT'), Pairing.new('REQ/ETH/USDT'),
-          Pairing.new('OMG/BTC/USDT'), Pairing.new('OMG/ETH/USDT'),
-          Pairing.new('ZRX/BTC/USDT'), Pairing.new('ZRX/ETH/USDT')
+          Pair.new('KNC/BTC/USDT'), Pair.new('KNC/ETH/USDT'),
+          Pair.new('OMG/ETH'),
+          Pair.new('REQ/BTC/USDT'), Pair.new('REQ/ETH/USDT'),
+          Pair.new('OMG/BTC/USDT'), Pair.new('OMG/ETH/USDT'),
+          Pair.new('ZRX/BTC/USDT'), Pair.new('ZRX/ETH/USDT')
         ].freeze
       end
 
-      def fetch_price(pairing)
-        raise ArgumentError unless supported_pairings.include?(pairing)
+      def fetch_price(pair)
+        raise ArgumentError unless supported_pairs.include?(pair)
 
-        merge_price pairing.sub_pairs do |pair|
+        merge_price pair.sub_pairs do |pair|
           best_bidask(client.order_book(pair.to_s.delete('/')))
         end
       end
