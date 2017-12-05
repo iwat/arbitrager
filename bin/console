@@ -1,9 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'bundler/setup'
-require 'pry'
-
 require File.expand_path('../../config/boot', __FILE__)
+
+require 'pry'
 
 Pry.start

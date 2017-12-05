@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Arbitrager::Base do
   let(:arbitrager) { Arbitrager::Base.new }
-  let(:omgeth) { Arbitrager::Pairing.new('OMG/ETH') }
+  let(:omgeth) { Exchange::Pairing.new('OMG/ETH') }
 
   describe '#pairings' do
     it 'is initialed with empty list' do
@@ -13,8 +13,8 @@ RSpec.describe Arbitrager::Base do
   end
 
   describe '#register_exchange' do
-    let(:reqeth) { Arbitrager::Pairing.new('REQ/ETH') }
-    let(:zrxeth) { Arbitrager::Pairing.new('ZRX/ETH') }
+    let(:reqeth) { Exchange::Pairing.new('REQ/ETH') }
+    let(:zrxeth) { Exchange::Pairing.new('ZRX/ETH') }
 
     it 'adds supported pairing to the list' do
       arbitrager.register_exchange(exchange_double([omgeth]))

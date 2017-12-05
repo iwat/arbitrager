@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'exchange/binance/options'
-require 'exchange/binance/private'
-require 'exchange/binance/public'
 require 'exchange/binance/base'
 
 module Exchange

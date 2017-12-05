@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
-require 'bundler/setup'
-require 'webmock/rspec'
+require File.expand_path('../../config/boot', __FILE__)
 
 require 'pry'
-
-$LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../lib")
-$LOAD_PATH.unshift("#{File.dirname(__FILE__)}/../vendor")
+require 'webmock/rspec'
 
 require 'arbitrager'
+require 'bitbot'
+require 'exchange'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

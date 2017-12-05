@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Arbitrager
+module Exchange
   class Pairing
     attr_reader :symbols
 

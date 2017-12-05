@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'arbitrager/exchange'
-
 module Arbitrager
   class Base
     attr_reader :exchanges, :pairings

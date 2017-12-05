@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Arbitrager::Pairing do
-  let(:omgeth) { Arbitrager::Pairing.new('OMG/ETH') }
+RSpec.describe Exchange::Pairing do
+  let(:omgeth) { Exchange::Pairing.new('OMG/ETH') }
 
   describe '#eq?' do
-    let(:omgeth2) { Arbitrager::Pairing.new('OMG/ETH') }
+    let(:omgeth2) { Exchange::Pairing.new('OMG/ETH') }
 
     it 'supports equality' do
       expect(omgeth).to eq(omgeth2)

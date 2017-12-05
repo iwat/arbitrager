@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Arbitrager::Exchange::BxInTh do
-  let(:exchange) { Arbitrager::Exchange::BxInTh.new('apikey', 'secret') }
-  let(:omgeth) { Arbitrager::Pairing.new('OMG/ETH') }
+RSpec.describe Exchange::BxInTh do
+  let(:exchange) { Exchange::BxInTh.new('apikey', 'secret') }
+  let(:omgeth) { Exchange::Pairing.new('OMG/ETH') }
 
   before do
     stub_request(:get, 'https://bx.in.th/api/pairing/')
@@ -31,7 +31,7 @@ RSpec.describe Arbitrager::Exchange::BxInTh do
   end
 
   describe '#fetch_price' do
-    let(:foobar) { Arbitrager::Pairing.new('FOO/BAR') }
+    let(:foobar) { Exchange::Pairing.new('FOO/BAR') }
 
     before { exchange.setup }
 
