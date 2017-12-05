@@ -5,69 +5,87 @@ require 'concurrent'
 
 module Exchange
   class BxInTh
-    attr_reader :bx, :omg_thb, :eth_thb
+    attr_reader :client, :native_pairings
     def initialize(api_key, secret)
-      @bx = ::BxInThAPI.new(api_key, secret)
+      @client = ::BxInThAPI.new(api_key, secret)
     end
 
     def setup
-      pairings = bx.currency_pairings
-      @omg_thb = pairings.find { |_, pair| match_pair(pair, 'THB', 'OMG') }[1]
-      @eth_thb = pairings.find { |_, pair| match_pair(pair, 'THB', 'ETH') }[1]
+      @native_pairings = client.currency_pairings.values
     end
 
     def supported_pairings
-      [Pairing.new('OMG/ETH')].freeze
+      [
+        Pairing.new('ETH/THB'),
+        Pairing.new('OMG/THB'),
+        Pairing.new('OMG/THB/ETH')
+      ].freeze
     end
 
     def fetch_price(pairing)
       raise ArgumentError unless supported_pairings.include?(pairing)
 
-      OmgEthThbPair.new(
-        OrderBook.for(bx, omg_thb['pairing_id']),
-        OrderBook.for(bx, eth_thb['pairing_id'])
-      ).opportunity
+      merge_price(order_books(pairing).map(&:best_bidask))
     end
 
     private
 
-    def match_pair(pair, pri, sec)
-      pair['primary_currency'] == pri && pair['secondary_currency'] == sec
+    def merge_price(prices)
+      prices.reduce([1, 1]) do |state, bidask|
+        [state[0] * bidask[0], state[1] * bidask[1]]
+      end
+    end
+
+    def order_books(pairing)
+      pairing.sub_pairs.map do |pairing|
+        OrderBook.for(client, resolve_native_pairing(pairing)['pairing_id'])
+      end
+    end
+
+    def resolve_invert_pairing(pairing)
+      native_pairings.select do |native_pairing|
+        native_pairing['primary_currency'] == pairing.base &&
+          native_pairing['secondary_currency'] == pairing.quote
+      end.first.tap { |p| p['pairing_id'] *= -1 }
+    end
+
+    def resolve_native_pairing(pairing)
+      native_pairings.select do |native_pairing|
+        native_pairing['primary_currency'] == pairing.quote &&
+          native_pairing['secondary_currency'] == pairing.base
+      end.first || resolve_invert_pairing(pairing)
     end
 
     class OrderBook
-      attr_reader :future
-      def self.for(bx, pairing)
-        new(Concurrent::Future.execute { bx.order_book(pairing) })
+      attr_reader :future, :invert
+
+      def self.for(client, pairing)
+        if pairing < 0
+          invert = true
+          pairing *= -1
+        end
+
+        client.order_book(pairing)
+        new(Concurrent::Future.execute { client.order_book(pairing) }, invert)
       end
 
-      def initialize(future)
+      def initialize(future, invert)
         @future = future
+        @invert = invert
       end
 
       def best_bid
         return unless future.wait_or_cancel(3)
-        future.value['bids'][0][0].to_f
+        invert ? 1 / future.value['asks'][0][0].to_f : future.value['bids'][0][0].to_f
       end
 
       def best_ask
         return unless future.wait_or_cancel(3)
-        future.value['asks'][0][0].to_f
-      end
-    end
-
-    class OmgEthThbPair
-      attr_reader :omg_book, :eth_book
-      def initialize(omg_book, eth_book)
-        @omg_book = omg_book
-        @eth_book = eth_book
+        invert ? 1 / future.value['bids'][0][0].to_f : future.value['asks'][0][0].to_f
       end
 
-      def opportunity
-        [
-          omg_book.best_bid / eth_book.best_ask,
-          omg_book.best_ask / eth_book.best_bid
-        ]
+      def best_bidask
+        [best_bid, best_ask]
       end
     end
   end

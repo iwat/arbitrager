@@ -8,8 +8,16 @@ module Exchange
       @symbols = symbols.split('/')
     end
 
+    def base
+      symbols.first
+    end
+
     def hash
       symbols.hash
+    end
+
+    def quote
+      symbols.last
     end
 
     def sub_pairs

@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Exchange::BxInTh do
   let(:exchange) { Exchange::BxInTh.new('apikey', 'secret') }
-  let(:omgeth) { Exchange::Pairing.new('OMG/ETH') }
 
   before do
     stub_request(:get, 'https://bx.in.th/api/pairing/')
@@ -24,9 +23,16 @@ RSpec.describe Exchange::BxInTh do
   end
 
   describe '#supported_pairings' do
-    it 'supports OMG/ETH' do
-      expect(exchange.supported_pairings.size).to eq(1)
-      expect(exchange.supported_pairings).to include(omgeth)
+    it 'supports ETH/THB' do
+      expect(exchange.supported_pairings).to include(Exchange::Pairing.new('ETH/THB'))
+    end
+
+    it 'supports OMG/THB/ETH' do
+      expect(exchange.supported_pairings).to include(Exchange::Pairing.new('OMG/THB/ETH'))
+    end
+
+    it 'supports OMG/THB' do
+      expect(exchange.supported_pairings).to include(Exchange::Pairing.new('OMG/THB'))
     end
   end
 
@@ -83,8 +89,13 @@ RSpec.describe Exchange::BxInTh do
       expect { exchange.fetch_price(foobar) }.to raise_error(ArgumentError)
     end
 
-    it 'returns fetch_price object' do
-      pp exchange.fetch_price(omgeth)
+    [
+      ['OMG/THB/ETH', 0.017859977133633735, 0.018034280315810784],
+      ['ETH/THB', 14_819, 14_869]
+    ].each do |pair, bid, ask|
+      it "returns fetch_price object for #{pair}" do
+        expect(exchange.fetch_price(Exchange::Pairing.new(pair))).to eq([bid, ask])
+      end
     end
   end
 end
