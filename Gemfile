@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 
 gem 'concurrent-ruby'
 gem 'faraday'
+gem 'puma'
 gem 'rake'
 
 group :development do

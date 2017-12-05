@@ -1,0 +1,11 @@
+{
+  "name": "BitBot: Ruby",
+  "description": "My personal tool to Crypto",
+  "keywords": [
+    "ruby"
+  ],
+  "image": "heroku/ruby",
+  "website": "http://github.com/iwat/bitbot-ruby",
+  "repository": "http://github.com/iwat/bitbot-ruby"
+}
+
