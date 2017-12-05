@@ -28,8 +28,8 @@ module Exchange
       def fetch_price(pair)
         raise ArgumentError unless supported_pairs.include?(pair)
 
-        merge_price pair.sub_pairs do |pair|
-          best_bidask(client.order_book(pair.to_s.delete('/')))
+        merge_price pair.sub_pairs do |sub_pair|
+          best_bidask(client.order_book(sub_pair.to_s.delete('/')))
         end
       end
 

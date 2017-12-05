@@ -37,55 +37,78 @@ module Exchange
     end
 
     def order_books(pair)
-      pair.sub_pairs.map do |pair|
-        OrderBook.for(client, resolve_native_pair(pair)['pairing_id'])
+      pair.sub_pairs.map do |sub_pair|
+        OrderBook.for(self, sub_pair)
       end
-    end
-
-    def resolve_invert_pair(pair)
-      native_pairs.select do |native_pair|
-        native_pair['primary_currency'] == pair.base &&
-          native_pair['secondary_currency'] == pair.quote
-      end.first.tap { |p| p['pairing_id'] *= -1 }
-    end
-
-    def resolve_native_pair(pair)
-      native_pairs.select do |native_pair|
-        native_pair['primary_currency'] == pair.quote &&
-          native_pair['secondary_currency'] == pair.base
-      end.first || resolve_invert_pair(pair)
     end
 
     class OrderBook
-      attr_reader :future, :invert
+      attr_reader :bx, :future, :invert, :pair
 
-      def self.for(client, pair)
-        if pair < 0
-          invert = true
-          pair *= -1
+      def self.for(bx, pair)
+        new(bx, pair).tap(&:execute)
+      end
+
+      def initialize(bx, pair)
+        @bx = bx
+        @pair = pair
+      end
+
+      def execute
+        native_pair['pairing_id'].tap do |native_id|
+          if native_id.negative?
+            @invert = true
+            native_id *= -1
+          end
+
+          @future = Concurrent::Future.execute do
+            bx.client.order_book(native_id)
+          end
         end
-
-        client.order_book(pair)
-        new(Concurrent::Future.execute { client.order_book(pair) }, invert)
-      end
-
-      def initialize(future, invert)
-        @future = future
-        @invert = invert
-      end
-
-      def best_bid
-        return unless future.wait_or_cancel(3)
-        invert ? 1 / future.value['asks'][0][0].to_f : future.value['bids'][0][0].to_f
-      end
-
-      def best_ask
-        return unless future.wait_or_cancel(3)
-        invert ? 1 / future.value['bids'][0][0].to_f : future.value['asks'][0][0].to_f
       end
 
       def best_bidask
-        [best_bid, best_ask]
+        if future.wait_or_cancel(3)
+          [best_bid, best_ask]
+        else
+          [0, 0]
+        end
+      end
+
+      private
+
+      def best_bid
+        invert_price(future.value['bids'][0][0].to_f, future.value['asks'][0][0].to_f)
+      end
+
+      def best_ask
+        invert_price(future.value['asks'][0][0].to_f, future.value['bids'][0][0].to_f)
+      end
+
+      def invert_price(offer, counter)
+        if invert
+          1 / counter
+        else
+          offer
+        end
+      end
+
+      def compare_with(native_pair, pri, sec)
+        native_pair['primary_currency'] == pri &&
+          native_pair['secondary_currency'] == sec
+      end
+
+      def invert_pair
+        bx.native_pairs
+          .select { |native_pair| compare_with(native_pair, pair.base, pair.quote) }
+          .first
+          .tap { |p| p['pairing_id'] *= -1 }
+      end
+
+      def native_pair
+        bx.native_pairs
+          .select { |native_pair| compare_with(native_pair, pair.quote, pair.base) }
+          .first || invert_pair
       end
     end
   end
