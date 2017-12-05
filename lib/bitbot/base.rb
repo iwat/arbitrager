@@ -13,5 +13,7 @@ module Bitbot
         ].each(&a.method(:register_exchange))
       end
     end
+
+    def start; end
   end
 end
