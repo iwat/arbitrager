@@ -1,13 +1,9 @@
 # frozen_string_literal: true
 
-require File.expand_path('../../config/boot', __FILE__)
+require File.expand_path('../../config/application', __FILE__)
 
 require 'pry'
 require 'webmock/rspec'
-
-require 'arbitrager'
-require 'bitbot'
-require 'exchange'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

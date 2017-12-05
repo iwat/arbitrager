@@ -5,7 +5,7 @@ require 'exchange'
 
 module Bitbot
   class Base
-    def dispatch
+    def initialize
       Arbitrager.new.tap do |a|
         [
           Exchange::Binance.new(ENV['BINANCE_API_KEY'], ENV['BINANCE_API_SECRET']),

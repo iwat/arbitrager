@@ -3,7 +3,7 @@
 require 'bitbot/base'
 
 module Bitbot
-  def self.new
-    Base.new
+  def self.instance
+    @@instance ||= Base.new
   end
 end
