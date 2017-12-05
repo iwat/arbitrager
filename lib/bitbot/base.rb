@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
 require 'arbitrager'
+require 'exchange'
 
 module Bitbot
   class Base
     def dispatch
       Arbitrager.new.tap do |a|
-        a.register_exchange(Exchange::Binance.new('', ''))
-        a.register_exchange(Exchange::BxInTh.new('', ''))
+        [
+          Exchange::Binance.new(ENV['BINANCE_API_KEY'], ENV['BINANCE_API_SECRET']),
+          Exchange::BxInTh.new(ENV['BX_API_KEY'], ENV['BX_API_SECRET']),
+        ].each(&a.method(:register_exchange))
       end
     end
   end
