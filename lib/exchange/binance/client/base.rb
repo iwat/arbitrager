@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+require 'openssl'
+
+require 'exchange/binance/client/options'
+require 'exchange/binance/client/private'
+require 'exchange/binance/client/public'
+require 'exchange/binance/client/simple_encoder'
+
 module Exchange
   module Binance
     module Client
@@ -19,9 +26,11 @@ module Exchange
 
         protected
 
-        def __private(url, params = {}, headers = {})
-          params = params.merge(api_auth_fields)
-          __request(url, method: :post, params: params, headers: headers)
+        def __private(url, method = :post, params = {}, headers = {})
+          auth = api_auth_fields(params)
+          headers = headers.merge(auth[:headers])
+          params = params.merge(auth[:params])
+          __request(url, method: method, params: params, headers: headers)
         end
 
         def __public(url, params = {}, headers = {})
@@ -40,17 +49,22 @@ module Exchange
         end
 
         def agent
-          @agent ||= Faraday.new(url: BASE_URL)
+          @agent ||= Faraday.new(url: BASE_URL, request: { params_encoder: SimpleEncoder.new }) do |faraday|
+            faraday.request(:url_encoded)
+            faraday.response(:logger, Faraday::Response::Logger.new(STDOUT), bodies: true)
+            faraday.adapter(Faraday.default_adapter)
+          end
         end
 
-        def default_headers
-          { 'Content-Type' => 'application/json' }
-        end
+        def api_auth_fields(params)
+          more_params = { timestamp: (Time.now.to_f * 1000).to_i }
+          data = URI.encode_www_form(params.merge(more_params))
+          more_params[:signature] = OpenSSL::HMAC.hexdigest('SHA256', api_secret, data)
 
-        def api_auth_fields
-          nonce = format('%18d', (Time.now.to_f * 10**9))
-          signature = Digest::SHA2.hexdigest("#{api_key}#{nonce}#{api_secret}")
-          { key: api_key, nonce: nonce, signature: signature }
+          {
+            headers: { 'X-MBX-APIKEY' => api_key },
+            params: more_params
+          }
         end
       end
     end
